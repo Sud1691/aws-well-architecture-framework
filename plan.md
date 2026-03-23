@@ -1,536 +1,695 @@
-# 4-Week Study Plan: NVIDIA Technical Rounds Prep
+# NVIDIA Interview Prep Plan
 
-**Assumption:** Round 2 scheduled in ~2 weeks, remaining rounds over following 2-3 weeks
+## Context
 
----
+You have already cleared the hiring manager discussion and the next rounds are expected to be **focus-area rounds** such as:
 
-## Week 1 (March 18-24): Foundation Building
+- Infrastructure as Code
+- Kubernetes
+- AWS Architecture
+- Internal Developer Platform
+- Security / Secrets / CI-CD / GitOps
 
-### Monday - Terraform Mastery (90 min)
+From the hiring manager discussion, the strongest signals were not just technical depth, but also:
 
-**Morning (45 min): Review Your Work**
-- [ ] Open EIP `infra/terraform/` directory
-- [ ] Review: `dynamodb.tf`, `eventbridge.tf`, `iam.tf`, `secrets.tf`
-- [ ] For each file, answer: "Why did I design it this way?"
-- [ ] List 3 decisions you'd change if rebuilding
+- **platform as product**
+- **API-first provisioning**
+- **golden path adoption**
+- **multi-region vs multi-AZ decision-making**
+- **downtime and production change strategy**
+- **developer experience and abstraction**
+- **not exposing raw Terraform/Kubernetes complexity to users**
 
-**Evening (45 min): Study Advanced Patterns**
-- [ ] Read: [Terraform State Best Practices](https://developer.hashicorp.com/terraform/language/state)
-- [ ] Focus on: Remote state, locking, workspaces
-- [ ] Write down: "How would I manage state for 100 teams?"
-
-**Practice Question (Write Answer):**
-*"Design a Terraform module structure for a multi-account, multi-region AWS setup with 50 development teams. How do you handle state? Drift detection? Module versioning?"*
-
----
-
-### Tuesday - Kubernetes Security (90 min)
-
-**Morning (45 min): RBAC Deep Dive**
-- [ ] Review: [K8s RBAC documentation](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
-- [ ] Study: Role vs ClusterRole, RoleBinding vs ClusterRoleBinding
-- [ ] Draw diagram: "How would you give Team A access to namespace A but not namespace B?"
-
-**Evening (45 min): Network Policies & Pod Security**
-- [ ] Read: [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-- [ ] Read: [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
-- [ ] Write scenario: "Block all egress except to specific external API"
-
-**Practice Question:**
-*"Design RBAC for a multi-tenant K8s cluster with 10 teams. Requirements: Teams can't see each other's namespaces, platform team has cluster-admin, security team can audit all namespaces."*
+So this plan is optimized for **how NVIDIA seems to think**, not just for broad DevOps interview prep.
 
 ---
 
-### Wednesday - AWS Multi-Region Architecture (90 min)
+# Core Preparation Themes
 
-**Morning (45 min): RDS Multi-AZ vs Multi-Region**
-- [ ] Review your answer from hiring manager question
-- [ ] Study: [RDS Multi-AZ](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
-- [ ] Study: [RDS Cross-Region Read Replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.XRgn.html)
-- [ ] Create comparison table: cost, RTO, RPO, use cases
+## 1. Platform as Product / Internal Developer Platform
 
-**Evening (45 min): Failover Strategies**
-- [ ] Read: [Route53 Health Checks](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html)
-- [ ] Study: Active-Active vs Active-Passive
-- [ ] Sketch architecture: "Multi-region app with automatic failover"
+This should be the highest-priority theme because it is likely to appear across multiple rounds.
 
-**Practice Question:**
-*"You need 99.99% uptime for a customer-facing API. Design multi-region architecture with RDS, S3, and ALB. Explain failover strategy, data replication, and cost implications."*
+### Focus areas
+- Golden path design
+- How to drive adoption of platform products
+- Self-service infrastructure
+- API-first provisioning
+- Workflow orchestration behind the API
+- Developer experience metrics
+- Standardization vs escape hatches
+- Platform abstractions over Terraform/Kubernetes
 
----
+### Key interview framing
+You should consistently position platform thinking like this:
 
-### Thursday - API-First Infrastructure (90 min)
-
-**Morning (45 min): REST API Design**
-- [ ] Design API schema for infrastructure provisioning:
-```
-  POST /api/databases
-  POST /api/compute/ec2
-  POST /api/kubernetes/namespaces
-  GET /api/infrastructure/{id}/status
-  DELETE /api/infrastructure/{id}
-```
-- [ ] For each endpoint: request schema, response schema, error codes
-- [ ] Think through: authentication, rate limiting, validation
-
-**Evening (45 min): Review Your Tools**
-- [ ] EIP API structure (`/api/risk/score`, `/api/architecture/services`)
-- [ ] How would you expose DNA Sequencing as API?
-- [ ] Write OpenAPI spec for one endpoint
-
-**Practice Question:**
-*"Design a REST API for developers to provision AWS infrastructure. Requirements: RDS, EC2, S3, VPC. Include: authentication, validation, async provisioning, status tracking, cost estimation before provisioning."*
+- Developers should consume **products**, not raw infrastructure implementation details
+- Platform should reduce **cognitive load**
+- Golden path should be the **easiest path**
+- Platform should enforce **secure defaults**
+- APIs/UI/CLI should abstract Terraform state, manifests, and cloud complexity
+- Success should be measured with:
+  - onboarding time
+  - deployment frequency
+  - lead time
+  - failure rate
+  - adoption rate
 
 ---
 
-### Friday - Your Production Tools (90 min)
+## 2. Kubernetes Architecture and Operations
 
-**Morning (45 min): EIP Deep Dive**
-- [ ] Run EIP locally, test all endpoints
-- [ ] Review `eip/core/provider_registry.py` - explain stub-first pattern
-- [ ] Review `eip/pillars/risk_engine/scorer.py` - explain algorithm
-- [ ] Prepare: "Walk me through EIP architecture" (4-minute answer)
+This will likely be tested as architecture, trade-offs, and scale rather than only cluster basics.
 
-**Evening (45 min): DNA Sequencing Deep Dive**
-- [ ] Run DNA Sequencing end-to-end demo
-- [ ] Review `infra_dna_sequencer.py` - explain cross-layer detection
-- [ ] Prepare example: "Secret rotates, deployment doesn't update, pods crash"
-- [ ] Practice: "How does DNA Sequencing catch config drift?" (3-minute answer)
+### Focus areas
+- Shared cluster vs dedicated cluster
+- Namespace isolation vs cluster isolation
+- Multi-tenancy models
+- EKS cluster lifecycle
+- Upgrades with minimal or no downtime
+- GitOps for cluster and app delivery
+- RBAC and access boundaries
+- Network policies
+- Pod security standards
+- Secrets integration in Kubernetes
+- Observability and failure domains
 
-**Practice Question:**
-*"Compare EIP and DNA Sequencing. What problem does each solve? How do they complement each other? If you could only build one for NVIDIA, which and why?"*
+### Key interview framing
+You should answer Kubernetes questions through decision criteria such as:
 
----
-
-### Weekend (March 23-24): Rest + Light Review
-
-**Saturday:**
-- [ ] No intense studying
-- [ ] Skim your notes from the week
-- [ ] Watch 1-2 YouTube videos on topics you found confusing
-- [ ] Exercise, relax, recharge
-
-**Sunday:**
-- [ ] 30-minute review: Re-read your practice question answers
-- [ ] 30-minute mock: Answer one question out loud, record yourself
-- [ ] Rest of day: Off
+- blast radius
+- isolation need
+- compliance requirement
+- operational overhead
+- developer autonomy
+- upgrade complexity
+- cost efficiency
 
 ---
 
-## Week 2 (March 25-31): Depth + Polish
+## 3. Infrastructure as Code at Scale
 
-### Monday - Terraform Testing & Validation (90 min)
+Because your background is strong here, this can become one of your best rounds if you prepare at scale level rather than only tooling level.
 
-**Morning (45 min): Terraform Testing**
-- [ ] Read: [Terratest](https://terratest.gruntwork.io/)
-- [ ] Read: [Terraform Test](https://developer.hashicorp.com/terraform/language/tests)
-- [ ] Write example: Unit test for a Terraform module
+### Focus areas
+- Terraform module design
+- Interface design for reusable modules
+- Versioning strategy
+- State management at scale
+- Drift detection
+- Validation and testing
+- Policy-as-code
+- Multi-account architecture
+- How to expose IaC via APIs instead of raw Terraform usage
 
-**Evening (45 min): Policy as Code**
-- [ ] Read: [OPA (Open Policy Agent)](https://www.openpolicyagent.org/)
-- [ ] Study: Sentinel for Terraform Cloud
-- [ ] Write policy: "Prevent S3 buckets without encryption"
+### Key interview framing
+Do not present Terraform as the product. Present it as the **execution engine** behind a platform.
 
-**Practice Question:**
-*"How would you ensure all Terraform modules created by 50 teams comply with security standards? Include: validation, testing, enforcement, feedback loop."*
+Example framing:
 
----
-
-### Tuesday - K8s Upgrades & Operations (90 min)
-
-**Morning (45 min): Cluster Upgrades**
-- [ ] Study: [EKS Upgrade Process](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html)
-- [ ] Review: Node group upgrades, in-place vs blue-green
-- [ ] Document: Zero-downtime upgrade strategy
-
-**Evening (45 min): Disaster Recovery**
-- [ ] Study: [Velero](https://velero.io/) for K8s backup/restore
-- [ ] Review: etcd backup/restore
-- [ ] Plan: "Complete cluster failure - how to recover?"
-
-**Practice Question:**
-*"You need to upgrade 20 EKS clusters from v1.28 to v1.30. Each cluster runs production workloads. Design the upgrade strategy, rollback plan, and validation approach."*
+- API/UI accepts intent
+- orchestration layer validates and applies guardrails
+- Terraform executes provisioning
+- status is exposed back through platform APIs
 
 ---
 
-### Wednesday - AWS Cost Optimization (90 min)
+## 4. AWS Architecture and Decision Frameworks
 
-**Morning (45 min): Cost Analysis**
-- [ ] Study: [AWS Cost Explorer](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html)
-- [ ] Review: Reserved Instances, Savings Plans, Spot Instances
-- [ ] Calculate: When does Reserved Instance make sense?
+This is less about listing services and more about demonstrating architectural judgment.
 
-**Evening (45 min): Right-Sizing**
-- [ ] Study: [AWS Compute Optimizer](https://aws.amazon.com/compute-optimizer/)
-- [ ] Review: CloudWatch metrics for utilization
-- [ ] Design: Automated right-sizing recommendation system
+### Focus areas
+- Multi-AZ vs multi-region decisions
+- RTO/RPO-driven design
+- Cost vs resilience trade-offs
+- RDS upgrade strategies
+- Downtime management
+- Blue-green / failover / maintenance window thinking
+- Data replication patterns
+- Route 53 failover
+- Well-Architected trade-offs
+- Security and operational implications
 
-**Practice Question:**
-*"Your AWS bill is $100K/month. Management wants 20% reduction without impacting performance. How would you approach this? Tools, methodology, risks."*
+### Key interview framing
+Always tie architecture choices to:
 
----
-
-### Thursday - Secrets Management Deep Dive (90 min)
-
-**Morning (45 min): Vault vs AWS Secrets Manager**
-- [ ] Read: [HashiCorp Vault](https://developer.hashicorp.com/vault/docs)
-- [ ] Focus on: Dynamic secrets, secret rotation, auth methods
-- [ ] Compare: Vault vs AWS Secrets Manager (features, cost, ops overhead)
-
-**Evening (45 min): K8s Secrets Integration**
-- [ ] Review: [External Secrets Operator](https://external-secrets.io/)
-- [ ] Study: Sealed Secrets, CSI Secret Store Driver
-- [ ] Your Argo CD setup: How do you handle secrets?
-
-**Practice Question:**
-*"Design secrets management for 10K engineers across 100 microservices. Requirements: Rotation every 30 days, audit trail, K8s integration, minimal ops overhead. Vault? AWS? Hybrid?"*
+- business criticality
+- customer impact
+- compliance needs
+- cost tolerance
+- operational complexity
+- recovery objectives
 
 ---
 
-### Friday - System Design Practice (90 min)
+## 5. Security in Platform Engineering
 
-**Full Session: Mock System Design**
+Since this role is in Product Security, platform security depth will matter a lot.
 
-Pick one, spend 90 min designing:
+### Focus areas
+- Secrets management
+- Vault vs AWS Secrets Manager / SSM
+- Rotation strategy
+- Auditability
+- IAM and least privilege
+- Workload identity
+- Policy enforcement
+- Secure-by-default templates
+- Supply chain basics
+- Security controls in CI/CD and GitOps
 
-**Option 1: Multi-Tenant Developer Platform**
-*"Design a platform where developers can self-service provision: databases, compute, storage, K8s namespaces. 1000 developers, 200 teams, multi-account AWS."*
-
-**Option 2: Secrets Rotation System**
-*"Design a system that auto-rotates all secrets (DB passwords, API keys, certs) every 30 days without breaking applications. 500 services, 50 databases, 100 external APIs."*
-
-**Option 3: Infrastructure Drift Detection**
-*"Design a system to detect drift between declared state (Terraform) and actual state (AWS). Scale: 10K resources, 50 accounts. Requirements: real-time detection, auto-remediation option."*
-
-**Structure your answer:**
-1. Requirements clarification (5 min)
-2. High-level architecture (20 min)
-3. Data model (15 min)
-4. API design (15 min)
-5. Scale considerations (15 min)
-6. Trade-offs and alternatives (20 min)
+### Key interview framing
+Security should show up as **built into the platform**, not as a separate afterthought.
 
 ---
 
-### Weekend (March 30-31): Mock Interview
+# Preparation Principles
 
-**Saturday (2 hours): Full Mock Interview**
+## 1. Spend less time reading, more time speaking
+Reading docs helps, but interviews reward:
+- structured thinking
+- decision-making
+- clear verbal explanation
+- architecture communication
 
-**Set up:**
-- Camera on (simulate video call)
-- Timer visible
-- Record yourself
+Use each study block roughly like this:
 
-**Interview simulation (90 min):**
-
-**0-5 min: Intro**
-- "Tell me about yourself"
-- "Why NVIDIA?"
-- "Why this role?"
-
-**5-25 min: Technical Deep-Dive (Pick 4 questions)**
-1. "Walk me through EIP architecture"
-2. "How would you design Terraform modules for 50 teams?"
-3. "Design RBAC for multi-tenant K8s cluster"
-4. "How do you handle K8s cluster upgrades with zero downtime?"
-5. "Multi-region architecture for 99.99% uptime"
-6. "How does DNA Sequencing detect config drift?"
-
-**25-35 min: System Design**
-- Pick one from Friday's options
-- Whiteboard it (use paper/tablet)
-
-**35-45 min: Your Questions**
-- Ask 3-4 smart questions
-
-**Watch recording, note:**
-- [ ] Rambling or concise?
-- [ ] Answering the question or tangents?
-- [ ] Confident or uncertain?
-- [ ] Too many "um" or "like"?
+- **20 min** concept refresh
+- **35 min** write answer or architecture notes
+- **35 min** speak answer out loud
 
 ---
 
-**Sunday:**
-- [ ] Review weak areas from mock
-- [ ] Re-do 2-3 answers that were bad
-- [ ] Rest of day: OFF
+## 2. Use decision frameworks everywhere
+A lot of your questions from the hiring manager were about **how you decide**.
+
+So prepare reusable frameworks for:
+- multi-AZ vs multi-region
+- shared vs dedicated clusters
+- platform API vs direct Terraform access
+- downtime-acceptable vs zero-downtime strategies
+- standardization vs flexibility
 
 ---
 
-## Week 3 (April 1-7): Round 2 Prep Week
+## 3. Connect every concept to your own work
+Your strongest advantage is not abstract knowledge. It is that you already built:
 
-**Assumption: Round 2 scheduled this week**
+- **Engineering Intelligence Platform**
+- **InfraDNASequencing**
 
-### Monday - Focus Area Deep Dive
-
-**Once you know Round 2 focus (IaC / K8s / AWS):**
-
-**If IaC:**
-- [ ] Review all Terraform notes from Week 1-2
-- [ ] Prepare 5 stories from your experience
-- [ ] Practice: Module design, state management, testing
-
-**If Kubernetes:**
-- [ ] Review all K8s notes
-- [ ] Prepare: RBAC, upgrades, security, multi-tenancy
-- [ ] Practice: Your Argo CD setup explanation
-
-**If AWS Architecture:**
-- [ ] Review: Multi-region, cost optimization, Well-Architected
-- [ ] Prepare: Real architectures you've built
-- [ ] Practice: Design questions
-
-**If Developer Platform:**
-- [ ] Review: API design, adoption strategies, product thinking
-- [ ] Prepare: EIP + DNA Sequencing stories
-- [ ] Practice: "How would you build X as a product?"
+Every important answer should connect back to:
+- something you built
+- something you operated
+- something you learned
+- something you would improve
 
 ---
 
-### Tuesday - War Stories Prep
-
-**Write out 5 detailed stories (30 min each):**
-
-**Story 1: Technical Challenge**
-- Situation: What was the problem?
-- Task: What did you need to solve?
-- Action: What did you actually do? (Technical details)
-- Result: What was the outcome? (Metrics)
-
-**Story 2: Production Incident**
-- The incident, your debugging process, the fix, the prevention
-
-**Story 3: Scaling Challenge**
-- System that didn't scale, how you made it scale, lessons learned
-
-**Story 4: Security Issue**
-- Vulnerability found, how you fixed it, how you prevented recurrence
-
-**Story 5: Golden Path Adoption**
-- How you got developers to use your platform, metrics
-
-**Practice telling each in 3-4 minutes out loud**
+## 4. Optimize for clarity, not memorization
+Do not memorize perfect scripted answers.
+Prepare:
+- opening structure
+- decision criteria
+- 2-3 examples
+- clear trade-offs
+- concise closing summary
 
 ---
 
-### Wednesday - Likely Questions Prep
+# Suggested 2-Week Plan
 
-**Write crisp answers (2-3 min each):**
-
-**Technical Questions:**
-1. "Walk me through your Terraform module design"
-2. "How do you test infrastructure code?"
-3. "Explain your K8s security approach"
-4. "How do you handle secrets in K8s?"
-5. "Design a multi-region failover architecture"
-6. "How would you reduce AWS costs by 20%?"
-7. "What's your approach to K8s upgrades?"
-8. "How do you detect and fix infrastructure drift?"
-
-**Behavioral Questions:**
-1. "Tell me about a time you disagreed with your team"
-2. "Tell me about a failure and what you learned"
-3. "How do you prioritize competing demands?"
-4. "How do you stay current with new technologies?"
-
-**Product Questions:**
-1. "How would you convince developers to use your platform?"
-2. "How do you measure platform success?"
-3. "What's your approach to platform documentation?"
-4. "How do you gather developer feedback?"
+This plan is better suited to your current situation than a very broad 4-week schedule.
 
 ---
 
-### Thursday - Your Tools Polish
+# Week 1: Core Themes + Strong Narratives
 
-**EIP:**
-- [ ] Run locally, ensure no errors
-- [ ] Test all 5 pillars
-- [ ] Prepare 4-min architecture walkthrough
-- [ ] Have production metrics ready
-- [ ] Screenshots of API responses
+## Day 1 - Internal Developer Platform / Platform as Product
 
-**DNA Sequencing:**
-- [ ] End-to-end demo works
-- [ ] Prepare secret rotation example
-- [ ] 3-min explanation of cross-layer detection
-- [ ] Have example output ready
+### Goals
+- Build your strongest answer for platform philosophy
+- Prepare golden path and API-first provisioning answers
 
-**Practice:**
-- [ ] "Walk me through EIP" (4 min)
-- [ ] "Walk me through DNA Sequencing" (3 min)
-- [ ] "How do these complement each other?" (2 min)
+### Study topics
+- What makes a platform a product
+- Why developers should consume APIs instead of Terraform modules
+- Golden path adoption strategies
+- Standardization vs flexibility
 
----
+### Output
+Prepare spoken answers for:
+1. How would you convince developers to adopt the golden path?
+2. Why should platform expose APIs instead of raw Terraform?
+3. How do you balance abstraction with flexibility?
 
-### Friday - Questions for Them
-
-**Prepare 10 questions, pick best 4 during interview:**
-
-**About the Role:**
-1. "What's the first project I'd work on?"
-2. "What does success look like in first 6 months?"
-3. "What's the biggest platform challenge right now?"
-
-**About the Team:**
-4. "How is Product Security team structured?"
-5. "What's the mix of security engineers vs platform engineers?"
-6. "What's the on-call rotation?"
-
-**Technical:**
-7. "What's the current tech stack - Go, Python, flexibility?"
-8. "How many K8s clusters are you managing?"
-9. "What's the secrets management solution?"
-10. "How do you handle multi-cloud (AWS, GCP, Azure)?"
-
-**Strategic:**
-11. "How does NVIDIA think about AI security differently?"
-12. "What's the build vs buy philosophy for tooling?"
+### Practice lens
+Frame every answer with:
+- user
+- pain point
+- abstraction
+- guardrails
+- adoption metric
 
 ---
 
-### Weekend Before Round 2
+## Day 2 - Kubernetes Architecture
 
-**Saturday (Light Review):**
-- [ ] Skim all notes (don't study new material)
-- [ ] Practice your opening (30 sec pitch)
-- [ ] Review your 5 war stories
-- [ ] Early bed (8+ hours sleep)
+### Goals
+- Prepare architecture-heavy Kubernetes answers
 
-**Sunday (Rest Day):**
-- [ ] No studying at all
-- [ ] Exercise, relax
-- [ ] Normal sleep schedule
-- [ ] Positive self-talk
+### Study topics
+- cluster-per-env vs shared cluster
+- namespace vs cluster isolation
+- multi-tenancy
+- RBAC
+- GitOps integration
+- platform provisioning flow for namespaces and app onboarding
 
----
+### Output
+Prepare spoken answers for:
+1. How do you decide between shared and dedicated clusters?
+2. How do you design K8s for multiple business verticals?
+3. How do you secure multi-tenant Kubernetes?
 
-## Week 4 (April 8-14): Remaining Rounds
-
-### Each Round Prep Pattern
-
-**3 Days Before:**
-- [ ] Deep dive on that round's focus area
-- [ ] Review relevant notes
-- [ ] Practice 5-6 likely questions
-
-**1 Day Before:**
-- [ ] Light review only (skim notes)
-- [ ] Practice opening + closing
-- [ ] Normal workday, early bed
-
-**Day Of:**
-- [ ] No cramming (makes you nervous)
-- [ ] 30-min review in morning
-- [ ] Normal activities until interview
-- [ ] If evening interview: 30-min nap at 6 PM
-
-**After Each Round:**
-- [ ] Write down every question asked
-- [ ] Note what you did well/poorly
-- [ ] Adjust prep for next round
+### Practice lens
+Always mention:
+- blast radius
+- operational complexity
+- cost
+- compliance
+- tenancy boundary
 
 ---
 
-## Daily Habits (Throughout All 4 Weeks)
+## Day 3 - AWS Architecture / Multi-AZ vs Multi-Region
 
-**Every Morning (15 min):**
-- [ ] Review yesterday's notes
-- [ ] Read one technical article
-- [ ] Practice one answer out loud
+### Goals
+- Build strong decision frameworks for resilience architecture
 
-**Every Evening (45 min):**
-- [ ] Study session (follow weekly plan above)
-- [ ] Write down 3 things learned
-- [ ] Preview tomorrow's topic
+### Study topics
+- multi-AZ vs multi-region
+- RTO / RPO
+- failover patterns
+- Route 53 / data replication basics
+- cost implications
 
-**Every Weekend:**
-- [ ] Saturday: Mock interview or light review
-- [ ] Sunday: Complete rest
+### Output
+Prepare spoken answers for:
+1. How do you decide if a service should be multi-AZ or multi-region?
+2. Design a highly available AWS service for a critical application
+3. How do you justify multi-region cost?
 
-**Energy Management:**
-- [ ] 7-8 hours sleep every night
-- [ ] Exercise 3-4x/week
-- [ ] Healthy meals
-- [ ] Avoid burnout (marathon, not sprint)
-
----
-
-## Key Principles
-
-### 1. Consistency > Intensity
-- 90 min/day for 4 weeks = 42 hours total
-- Better than 12-hour cramming sessions
-- Spaced repetition works better
-
-### 2. Active Learning > Passive Reading
-- Write answers, don't just read
-- Practice out loud, don't just think
-- Build/demo things, don't just study
-
-### 3. Focus on Gaps, Not Strengths
-- You already know K8s basics
-- Spend time on: Vault, multi-region, cost optimization
-- Polish weak areas, not strong areas
-
-### 4. Connect Everything to Your Work
-- Every concept: "How does this relate to EIP?"
-- Every question: "How did I solve this at ThoughtWorks?"
-- Your experience is your advantage
+### Practice lens
+Tie to:
+- business impact
+- outage type
+- recovery objective
+- operational burden
 
 ---
 
-## Red Flags to Avoid
+## Day 4 - RDS Downtime / Change Management
 
-**Don't:**
-- ❌ Cram 8 hours the night before
-- ❌ Learn new technologies from scratch (Go, Rust, etc)
-- ❌ Build new projects (you have EIP + DNA Sequencing)
-- ❌ Memorize answers word-for-word
-- ❌ Neglect sleep/exercise/health
-- ❌ Study on weekends (burnout risk)
+### Goals
+- Prepare strong production-change answers
 
-**Do:**
-- ✅ Sustainable daily practice
-- ✅ Deepen existing knowledge
-- ✅ Polish what you've already built
-- ✅ Practice explaining clearly
-- ✅ Maintain energy and health
-- ✅ Rest on weekends
+### Study topics
+- RDS maintenance strategies
+- upgrade planning
+- failover approaches
+- blue-green concepts
+- communication and downtime windows
 
----
+### Output
+Prepare spoken answers for:
+1. How would you manage downtime for RDS upgrade or configuration changes?
+2. When is downtime acceptable?
+3. How would you reduce risk during database changes?
 
-## The Week-by-Week Summary
-
-**Week 1:** Foundation (Terraform, K8s, AWS, APIs, Your Tools)  
-**Week 2:** Depth (Testing, Ops, Cost, Secrets, System Design)  
-**Week 3:** Round 2 Prep (Focus area deep-dive, stories, questions)  
-**Week 4:** Execute (Remaining rounds, adapt based on feedback)
-
-**Total time investment:** 90 min/day × 20 days = 30 hours over 4 weeks
-
-**Plus:** 2 hours mock interview, 2 hours Round 2 focused prep = **~35 hours total**
+### Practice lens
+Answer in this order:
+- business tolerance
+- technical approach
+- rollback plan
+- communication plan
+- validation after change
 
 ---
 
-## Success Metrics
+## Day 5 - Terraform / IaC at Scale
 
-**You'll know you're ready when:**
-- [ ] Can explain EIP + DNA Sequencing in 30 seconds each
-- [ ] Can answer "Design X" questions with structured approach
-- [ ] Have 5 war stories ready (3-4 min each)
-- [ ] Can discuss Terraform/K8s/AWS with depth, not surface
-- [ ] Know your gaps and how you'd address them
-- [ ] Feel confident but not arrogant
-- [ ] Sleep well the night before interviews
+### Goals
+- Reframe Terraform as platform backend, not user-facing product
+
+### Study topics
+- module design
+- module contracts and interfaces
+- state isolation
+- testing and validation
+- policy enforcement
+- drift handling
+
+### Output
+Prepare spoken answers for:
+1. How would you design Terraform modules for many teams?
+2. How do you handle state safely at scale?
+3. How do you expose Terraform capability without exposing Terraform complexity?
+
+### Practice lens
+Use three-layer language:
+- interface
+- orchestration
+- execution
 
 ---
 
-**Sud, this is your roadmap. 90 min/day, sustainable pace, deep preparation.**
+## Day 6 - EIP Project Positioning
 
-**Stick to this plan and you'll walk into Round 2 completely ready.**
+### Goals
+- Turn EIP into a strong system-design and platform story
 
-**Start tomorrow (Monday). Week 1, Day 1: Terraform Mastery.** 
+### Study topics
+- architecture of EIP
+- problem it solves
+- who benefits
+- how it becomes a platform capability
+- how it could help platform/product teams
 
-**Let's go.** 🚀
+### Output
+Prepare:
+- 30-second summary
+- 2-minute explanation
+- 5-minute architecture walkthrough
+
+### Key framing
+EIP is not just a metrics tool. It is:
+- an engineering intelligence layer
+- a feedback loop for platform improvement
+- a decision-support system for engineering efficiency and governance
+
+---
+
+## Day 7 - InfraDNASequencing Positioning
+
+### Goals
+- Turn InfraDNASequencing into a governance / pattern intelligence story
+
+### Study topics
+- what patterns it detects
+- how it helps standardization
+- how it could integrate with CI/CD or policy engines
+- how it reduces inconsistency and risk
+
+### Output
+Prepare:
+- 30-second summary
+- 2-minute explanation
+- comparison with EIP
+
+### Key framing
+InfraDNASequencing is not just infra analysis. It is:
+- pattern discovery
+- standardization intelligence
+- governance enablement
+- a way to evolve platform standards based on real usage
+
+---
+
+# Week 2: Interview Simulation + Focused Polish
+
+## Day 8 - Security / Secrets Management
+
+### Goals
+- Build strong security-platform answers
+
+### Study topics
+- secrets lifecycle
+- Vault vs AWS secrets tooling
+- secret rotation
+- Kubernetes integration
+- IAM and least privilege
+- audit trails
+
+### Output
+Prepare spoken answers for:
+1. How would you design secrets management for a large engineering org?
+2. How do you handle secrets in Kubernetes and GitOps?
+3. How should security be built into platform workflows?
+
+---
+
+## Day 9 - API-First Provisioning Design
+
+### Goals
+- Prepare direct answers to the “platform should be REST API” signal
+
+### Study topics
+- API design for provisioning workflows
+- async operations
+- status tracking
+- validation
+- approvals
+- idempotency
+- cost estimation before provisioning
+
+### Output
+Design and be ready to explain:
+- one REST API for provisioning AWS services
+- request flow
+- backend workflow
+- status model
+- audit model
+
+### Key framing
+The API should expose intent such as:
+- create database
+- create namespace
+- create service pipeline
+
+The platform handles:
+- policy checks
+- provisioning workflow
+- Terraform execution
+- result reporting
+
+---
+
+## Day 10 - Golden Path Adoption / Platform Leadership
+
+### Goals
+- Prepare non-technical but high-value senior-level answers
+
+### Study topics
+- adoption strategy
+- trust building
+- platform marketing internally
+- documentation and support
+- feedback loops
+- measuring platform success
+
+### Output
+Prepare spoken answers for:
+1. How would you convince teams to use the golden path?
+2. What if teams resist platform standards?
+3. How do you know whether your platform is succeeding?
+
+### Key framing
+Adoption comes from:
+- lower effort
+- better defaults
+- faster delivery
+- reliability
+- good user experience
+- optional escape hatch for special cases
+
+---
+
+## Day 11 - System Design Round Practice
+
+### Goals
+- Practice one end-to-end design round
+
+### Choose one design problem
+- internal developer platform
+- secure secrets rotation system
+- infrastructure provisioning API platform
+- multi-tenant Kubernetes platform
+
+### Practice answer structure
+1. Clarify requirements
+2. Define users and scale
+3. Propose high-level architecture
+4. Explain workflows
+5. Explain security and observability
+6. Discuss trade-offs
+7. Explain how you would roll it out incrementally
+
+---
+
+## Day 12 - War Stories / Behavioral + Technical Stories
+
+### Goals
+- Prepare real examples from your work
+
+### Prepare 5 stories
+1. difficult technical design decision
+2. production issue or failure
+3. platform adoption challenge
+4. security or governance improvement
+5. scaling or standardization challenge
+
+### Practice structure
+Use:
+- situation
+- task
+- action
+- result
+- lesson learned
+
+---
+
+## Day 13 - Mock Interview Day
+
+### Simulate:
+- intro
+- one technical deep dive
+- one system design question
+- one behavioral question
+- your questions for them
+
+### Review after mock
+Note:
+- where you rambled
+- where you lacked structure
+- where your examples were weak
+- where you sounded strongest
+
+---
+
+## Day 14 - Light Review + Final Polishing
+
+### Focus
+- no heavy learning
+- just review notes
+- repeat your best answers
+- polish your 30-second intro
+- polish project explanations
+- polish your questions for them
+
+---
+
+# Question Bank You Should Be Ready For
+
+## Platform / IDP
+- How would you convince developers to adopt a golden path?
+- Why should developers consume APIs instead of raw Terraform?
+- How do you build platform abstractions without taking away flexibility?
+- How do you measure success of an internal platform?
+
+## Kubernetes
+- How do you decide between shared clusters and dedicated clusters?
+- How do you design multi-tenant Kubernetes securely?
+- How do you think about namespaces vs clusters as isolation boundaries?
+- How do you handle upgrades with low downtime?
+
+## AWS Architecture
+- How do you decide between multi-AZ and multi-region?
+- How do you handle RDS downtime during upgrades?
+- How do you design for resilience without overspending?
+- What services deserve multi-region and why?
+
+## IaC
+- How would you design Terraform modules for many teams?
+- How do you handle state and versioning at scale?
+- How do you enforce standards across many Terraform users?
+- How do you expose IaC through APIs and workflows?
+
+## Security
+- How do you handle secrets in Kubernetes and CI/CD?
+- Vault vs AWS Secrets Manager: how do you decide?
+- How do you build secure-by-default provisioning workflows?
+- How do you add guardrails without blocking teams?
+
+---
+
+# How to Talk About Your Projects
+
+## Engineering Intelligence Platform
+Position it as:
+- a platform intelligence layer
+- a feedback mechanism for improving engineering systems
+- a way to understand bottlenecks, risk, and delivery health
+- something that helps improve developer experience and governance
+
+## InfraDNASequencing
+Position it as:
+- a system for discovering infrastructure patterns
+- a governance and standardization aid
+- a way to detect inconsistency, anti-patterns, and drift signals
+- an input into policy, platform evolution, and secure defaults
+
+## Combined Story
+Together they represent:
+- one system that tells you **what is happening**
+- one system that helps determine **what should be happening**
+
+That is a powerful senior-level platform narrative.
+
+---
+
+# Daily Study Template
+
+For each 90-minute study block:
+
+## 20 min
+Refresh concept and review notes
+
+## 35 min
+Write structured answers or architecture outline
+
+## 35 min
+Speak answers out loud, record if possible
+
+---
+
+# Interview Answer Structure
+
+For most architecture or platform questions, use this flow:
+
+1. Start with the user/problem
+2. Clarify the business or operational requirement
+3. Explain the abstraction or architecture
+4. Explain guardrails and security
+5. Explain trade-offs
+6. Explain how success is measured
+
+This keeps your answers senior, structured, and product-oriented.
+
+---
+
+# Final Notes
+
+## Priorities
+Your highest prep priority should be:
+
+1. Platform as product / API-first provisioning
+2. Kubernetes architecture and tenancy
+3. AWS architecture decision-making
+4. Terraform at scale
+5. Security built into platform workflows
+
+## Avoid
+- over-reading without speaking
+- memorizing scripts
+- preparing only tool-level answers
+- giving answers without business trade-offs
+- presenting Terraform/Kubernetes as the product itself
+
+## Aim
+You want to come across as someone who:
+- builds platforms that other engineers rely on
+- thinks in products and abstractions
+- makes strong trade-off decisions
+- can scale secure cloud systems cleanly
+- improves developer experience without losing governance
